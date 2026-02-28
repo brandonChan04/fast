@@ -16,7 +16,7 @@ const formatTimestamp = (value) => {
 function App() {
   const { data, loading, error } = useStats()
   const errorMessage = error || data?.apiError
-  const updatedAt = data?.updatedAt ? formatTimestamp(data.updatedAt) : '—'
+  const updatedAt = data?.lastUpdated ? formatTimestamp(data.lastUpdated) : '—'
 
   if (loading && !data) {
     return (
@@ -38,8 +38,8 @@ function App() {
         <h1 className="title">SPEED — 20+ Over</h1>
 
         <div className="cards">
-          <CountCard label="Today" value={data?.dailyOver20 ?? 0} />
-          <CountCard label="This week" value={data?.weeklyOver20 ?? 0} />
+          <CountCard label="Today" value={data?.todayOver20 ?? 0} />
+          <CountCard label="This week" value={data?.weekOver20 ?? 0} />
           <CountCard label="All time" value={data?.allTimeOver20 ?? 0} />
         </div>
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { fetchStats } from '../api/stats'
+import { getStats } from '../api/stats'
 
-const POLL_INTERVAL_MS = 10000
+const POLL_INTERVAL_MS = 5000
 
 const useStats = () => {
   const [data, setData] = useState(null)
@@ -19,10 +19,8 @@ const useStats = () => {
       }
 
       abortController = new AbortController()
-      const baseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
-
       try {
-        const result = await fetchStats(baseUrl, abortController.signal)
+        const result = await getStats(abortController.signal)
         if (!isMounted) return
 
         dataRef.current = result

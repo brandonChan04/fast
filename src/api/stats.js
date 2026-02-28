@@ -1,4 +1,5 @@
-export const fetchStats = async (baseUrl, signal) => {
+export const getStats = async (signal) => {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL ?? ''
   const normalizedBaseUrl = baseUrl ? baseUrl.replace(/\/$/, '') : ''
   const endpoint = normalizedBaseUrl ? `${normalizedBaseUrl}/api/stats` : '/api/stats'
 
@@ -10,8 +11,19 @@ export const fetchStats = async (baseUrl, signal) => {
     signal,
   })
 
+  const contentType = response.headers.get('content-type') || ''
+  const isJson = contentType.includes('application/json')
+
   if (!response.ok) {
-    throw new Error(`Request failed: ${response.status} ${response.statusText}`)
+    const bodyText = await response.text()
+    const snippet = bodyText ? ` - ${bodyText.slice(0, 120)}` : ''
+    throw new Error(`Request failed: ${response.status} ${response.statusText}${snippet}`)
+  }
+
+  if (!isJson) {
+    const bodyText = await response.text()
+    const snippet = bodyText ? bodyText.slice(0, 160) : 'No response body'
+    throw new Error(`Expected JSON but received: ${snippet}`)
   }
 
   return response.json()
